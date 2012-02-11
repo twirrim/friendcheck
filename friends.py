@@ -28,24 +28,25 @@ try:
     api = twitter.Api(consumer_key=conkey,consumer_secret=consec, access_token_key=accesstok, access_token_secret=accesstoksec)
 except:
     print "Failed to connect to the API"
+api.VerifyCredentials()
 
-users = api.GetFriends()
-current = []
-for u in users:
-    current.append(u.screen_name)
-
-for u in current:
-    t = (u,)
-    c.execute('select * from friends where friend=?', t) 
+f = api.GetFriendIDs()
+for fid in  f['ids']:
+    t = (fid,)     
+    c.execute('select * from friends where friend=?', t)
     friend = c.fetchone()
     if not friend:
         c.execute('insert into friends values (?)',t)
+
 conn.commit()
 
 c.execute('select * from friends')
 for of in c:
-    if of[0] not in current:
-        print "Did you mean to unfollow %s?" % (of)
+    if int(of[0]) not in f['ids']:
+        userid = api.UsersLookup(user_id=[of[0]])
+        for uid in userid:
+            unfollowed_user=uid.screen_name
+        print "Did you mean to unfollow @%s?" % (unfollowed_user)
 
 # Close our connections
 c.close()
