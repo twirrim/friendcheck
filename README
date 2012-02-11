@@ -4,6 +4,26 @@ It's also my first real attempt to do stuff with the python twitter module.
 Constructive critique is always welcome, my programming style is decidedly quirky I'm sure.
 If I'm doing it wrong, let me know!
 
+
+To use:
+
+To use this you'll need to register an application with twitter for now, until I figure out the proper approach.
+
+https://dev.twitter.com/apps -> create a new application
+
+Once you've done that you'll need to change the following variables in the python script:
+
+Consumer Key : conkey=''
+Consumer Secret : consec=''
+
+Then create an access token and set the following:
+
+Access Token : accesstok=''
+Access token secret : accesstoksec=''
+
+Your first run will initialise the database with your current set of followers.  Future ones will add any new followers and report any discrepencies
+
+
 Note: 
 I'm already seeing odd behaviour with Twitter's API.  It seems the friendlist returned by the API isn't always complete.
 It's rather frustrating and may make this script completely and utterly useless!
