@@ -11,6 +11,6 @@ To use this you'll need to register an application with twitter for now, until I
 
 https://dev.twitter.com/apps -> create a new application
 
-Once you've done that you'll need to set the values in the friends.cfg file from the values you find on the page
+Once you've done that you'll need to set the values in the friends.cfg file from the values you find on the page, and choose a file for the database to be stored in.
 
 Your first run will initialise the database with your current set of followers.  Future ones will add any new followers and report any discrepencies
