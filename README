@@ -1,0 +1,9 @@
+This is an attempt to set up a simple check of who I'm following.
+It's also my first real attempt to do stuff with the python twitter module.
+
+Constructive critique is always welcome, my programming style is decidedly quirky I'm sure.
+If I'm doing it wrong, let me know!
+
+Note: 
+I'm already seeing odd behaviour with Twitter's API.  It seems the friendlist returned by the API isn't always complete.
+It's rather frustrating and may make this script completely and utterly useless!
