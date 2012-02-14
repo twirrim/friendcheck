@@ -7,7 +7,7 @@ import sys
 import ConfigParser
 
 config = ConfigParser.RawConfigParser()
-config.read("friends.cfg")
+config.read("/path/to/friends.cfg")
 
 conkey = config.get("twitter","consumer_key")
 consec = config.get("twitter","consumer_secret")
@@ -56,12 +56,19 @@ conn.commit()
 # Report on changes.
 
 c.execute('select * from friends')
+temp = []
 for of in c:
     if int(of[0]) not in f['ids']:
+        temp.append(of[0])
         userid = api.UsersLookup(user_id=[of[0]])
         for uid in userid:
             unfollowed_user=uid.screen_name
         print "Did you mean to unfollow @%s?" % (unfollowed_user)
+
+# Must be a neater way to do this?
+for i in temp:
+    c.execute("delete from friends where friend = ?",(i,))
+conn.commit()
 
 # Close our connections
 c.close()
