@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import twitter
-import cPickle
 import sqlite3
 import os.path
 import sys
