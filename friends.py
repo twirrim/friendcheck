@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import twitter
-import sqlite3
 import os.path
 import sys
 import ConfigParser
+import cPickle
 
 config = ConfigParser.RawConfigParser()
 config.read("/path/to/friends.cfg")
@@ -12,23 +12,15 @@ conkey = config.get("twitter","consumer_key")
 consec = config.get("twitter","consumer_secret")
 accesstok = config.get("twitter","access_token")
 accesstoksec = config.get("twitter","access_token_secret")
-database = config.get("friends","database")
+previous = config.get("friends","previous")
 
-# Check if the database exists or not, create if necessary
-if not os.path.exists(database):
-    conn = sqlite3.connect(database)
-    c = conn.cursor()
-    c.execute('''create table friends
-              (friend text)''')
-    conn.commit()
-    c.close()
-    
-# Try and establish a connection with the database
-try:
-    conn = sqlite3.connect(database)
-    c = conn.cursor()
-except:
-    print "Failed to connect to sqlite3 database"
+# Check if the previous exists or not, create if necessary
+if os.path.exists(previous):
+    pkl_file = open(previous,'rb')
+    knownfriends = cPickle.load(pkl_file)
+    pkl_file.close()
+else:
+    knownfriends = []
 
 # Try to connect to the Twitter API
 try:
@@ -40,35 +32,22 @@ except:
 api.VerifyCredentials()
 
 # Get a dictionary object containing all the IDs of your friends
-# If userid is new, adds to database
+# appends all entries to a list for easy native comparison
 f = api.GetFriendIDs()
+friends = []
 for fid in  f['ids']:
-    t = (fid,)     
-    c.execute('select * from friends where friend=?', t)
-    friend = c.fetchone()
-    if not friend:
-        c.execute('insert into friends values (?)',t)
-# Commits the changes
-conn.commit()
+    friends.append(fid)
 
-# Grab a list of people user used to follow
-# Report on changes.
+# We don't care about order, so we can take advantage of the
+# intersection properties of sets in python
+difference = list(set(knownfriends)-set(friends))
 
-c.execute('select * from friends')
-temp = []
-for of in c:
-    if int(of[0]) not in f['ids']:
-        temp.append(of[0])
-        userid = api.UsersLookup(user_id=[of[0]])
-        for uid in userid:
-            unfollowed_user=uid.screen_name
-        print "Did you mean to unfollow @%s?" % (unfollowed_user)
+if (len(difference)>0):
+    userid = api.UsersLookup(user_id=difference)
+    for uid in userid:
+        print "Did you mean to unfollow @%s?" % (uid.screen_name)
 
-# Must be a neater way to do this?
-for i in temp:
-    c.execute("delete from friends where friend = ?",(i,))
-conn.commit()
-
-# Close our connections
-c.close()
-conn.close()
+# storing for next run
+pkl_file = open(previous,'wb')
+cPickle.dump(friends,pkl_file, -1)
+pkl_file.close()
