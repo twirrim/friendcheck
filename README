@@ -1,11 +1,12 @@
 This is an attempt to set up a simple check of who I'm following.
-It's also my first real attempt to do stuff with the python twitter module.
+It's also my first real attempt to do stuff with the python-twitter module.
 
 Constructive critique is always welcome, my programming style is decidedly quirky I'm sure.
 If I'm doing it wrong, let me know!
 
-
 To use:
+
+You will require the python-twitter module from pypi (not the twitter module), which you can grab using pip or easy_install in the usual manner
 
 To use this you'll need to register an application with twitter for now, until I figure out the proper approach.
 
