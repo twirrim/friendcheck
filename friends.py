@@ -35,7 +35,7 @@ api.VerifyCredentials()
 # appends all entries to a list for easy native comparison
 f = api.GetFriendIDs()
 friends = []
-for fid in  f['ids']:
+for fid in  f:
     friends.append(fid)
 
 # We don't care about order, so we can take advantage of the
