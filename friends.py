@@ -20,7 +20,7 @@ if os.path.exists(previous):
     knownfriends = cPickle.load(pkl_file)
     pkl_file.close()
 else:
-    knownfriends = []
+    knownfriends = set()
 
 # Try to connect to the Twitter API
 try:
@@ -34,18 +34,25 @@ api.VerifyCredentials()
 # Get a dictionary object containing all the IDs of your friends
 # appends all entries to a list for easy native comparison
 f = api.GetFriendIDs()
-friends = []
+friends = set()
 for fid in  f:
-    friends.append(fid)
+    friends.add(fid)
 
 # We don't care about order, so we can take advantage of the
 # intersection properties of sets in python
-difference = list(set(knownfriends)-set(friends))
+difference = knownfriends ^ friends
 
-if (len(difference)>0):
-    userid = api.UsersLookup(user_id=difference)
-    for uid in userid:
-        print "Did you mean to unfollow @%s?" % (uid.screen_name)
+if len(difference)>0:
+    unfollowed = knownfriends - friends
+    followed = friends - knownfriends
+    for uid in followed:
+        userid = api.UsersLookup(user_id=difference)
+        for uid in userid:
+            print "Did you mean to follow @%s?" % (uid.screen_name)
+    for uid in unfollowed:
+        userid = api.UsersLookup(user_id=difference)
+        for uid in userid:
+            print "Did you mean to unfollow @%s?" % (uid.screen_name)
 
 # storing for next run
 pkl_file = open(previous,'wb')
