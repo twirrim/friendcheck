@@ -46,11 +46,11 @@ if len(difference)>0:
     unfollowed = knownfriends - friends
     followed = friends - knownfriends
     for uid in followed:
-        userid = api.UsersLookup(user_id=difference)
+        userid = api.UsersLookup(user_id=followed)
         for uid in userid:
             print "Did you mean to follow @%s?" % (uid.screen_name)
     for uid in unfollowed:
-        userid = api.UsersLookup(user_id=difference)
+        userid = api.UsersLookup(user_id=unfollowed)
         for uid in userid:
             print "Did you mean to unfollow @%s?" % (uid.screen_name)
 
