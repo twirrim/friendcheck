@@ -38,17 +38,17 @@ friends = set()
 for fid in  f:
     friends.add(fid)
 
-# We don't care about order, so we can take advantage of the
-# intersection properties of sets in python
-difference = knownfriends ^ friends
+# Pull out the differences between the sets
+unfollowed = knownfriends - friends
+followed = friends - knownfriends
 
-if len(difference)>0:
-    unfollowed = knownfriends - friends
-    followed = friends - knownfriends
+if len(followed) > 0:
     for uid in followed:
         userid = api.UsersLookup(user_id=followed)
         for uid in userid:
             print "Did you mean to follow @%s?" % (uid.screen_name)
+
+if len(unfollowed) > 0:
     for uid in unfollowed:
         userid = api.UsersLookup(user_id=unfollowed)
         for uid in userid:
